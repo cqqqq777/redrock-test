@@ -1,0 +1,8 @@
+2023-02-01T22:18:13.178+0800	INFO	/home/goproject/src/redrock-test/boot/logger.go:34	init logger successfully
+2023-02-01T22:18:13.185+0800	FATAL	/home/goproject/src/redrock-test/boot/database.go:28	dial tcp 127.0.0.1:3306: connect: connection refused
+2023-02-01T22:18:32.191+0800	INFO	/home/goproject/src/redrock-test/boot/logger.go:34	init logger successfully
+2023-02-01T22:18:32.276+0800	INFO	/home/goproject/src/redrock-test/boot/database.go:31	connect mysql successfully
+2023-02-01T22:18:32.278+0800	INFO	/home/goproject/src/redrock-test/boot/database.go:45	connect redis successfully
+2023-02-01T22:30:58.615+0800	INFO	/home/goproject/src/redrock-test/boot/logger.go:34	init logger successfully
+2023-02-01T22:30:58.618+0800	INFO	/home/goproject/src/redrock-test/boot/database.go:31	connect mysql successfully
+2023-02-01T22:30:58.619+0800	INFO	/home/goproject/src/redrock-test/boot/database.go:45	connect redis successfully
