@@ -27,6 +27,7 @@ func InitRouters() {
 		private.PUT("/password", controller.RevisePassword)        //修改密码
 		private.PUT("/username", controller.ReviseUsername)        //修改用户名
 		private.PUT("/users/:uid/info", controller.UpdateUserInfo) //修改用户信息
+		public.POST("/comments", controller.CommentBook)           //书评
 	}
 	if err := r.Run(); err != nil {
 		panic(err)
