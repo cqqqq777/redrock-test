@@ -22,7 +22,8 @@ func InitRouters() {
 	private := v1.Group("")
 	private.Use(middleware.JWTAuth)
 	{
-
+		private.PUT("/password", controller.RevisePassword) //修改密码
+		private.PUT("/username", controller.ReviseUsername) //修改用户名
 	}
 	if err := r.Run(); err != nil {
 		panic(err)

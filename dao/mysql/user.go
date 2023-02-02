@@ -64,3 +64,14 @@ func FindUidByEmail(email string) (uid int, err error) {
 	err = g.Mdb.QueryRow("select uid from users where email = ? ", email).Scan(&uid)
 	return
 }
+
+// RevisePassword 修改密码
+func RevisePassword(password string, uid int) error {
+	_, err := g.Mdb.Exec("update users set password = ? where uid = ?", password, uid)
+	return err
+}
+
+func ReviseUsername(username string, uid int) error {
+	_, err := g.Mdb.Exec("update users set username = ? where uid =?", username, uid)
+	return err
+}

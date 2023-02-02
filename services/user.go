@@ -172,3 +172,28 @@ func LoginByVerification(user *model.ParamLoginByVerificationUser) (data *model.
 	data.Token, err = utils.GenToken(data.Uid)
 	return
 }
+
+// RevisePassword 修改密码
+func RevisePassword(user *model.ParamReviseUser) error {
+	password, err := mysql.FindPasswordByUid(user.Uid)
+	if err != nil {
+		return err
+	}
+	if user.OriPassword != password {
+		return mysql.ErrorWrongPassword
+	}
+	if err = mysql.RevisePassword(user.NewPassword, user.Uid); err != nil {
+		return err
+	}
+	return nil
+}
+
+func ReviseUsername(user *model.ParamReviseUser) error {
+	if err := mysql.CheckUsername(user.NewUsername); err != nil {
+		return err
+	}
+	if err := mysql.ReviseUsername(user.NewUsername, user.Uid); err != nil {
+		return err
+	}
+	return nil
+}

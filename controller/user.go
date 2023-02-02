@@ -131,3 +131,61 @@ func LoginByVerification(c *gin.Context) {
 	}
 	RespSuccess(c, data)
 }
+
+// RevisePassword 修改密码
+func RevisePassword(c *gin.Context) {
+	ParamUser := new(model.ParamReviseUser)
+	if err := c.ShouldBindJSON(ParamUser); err != nil {
+		RespFailed(c, CodeInvalidParam)
+		return
+	}
+	if ParamUser.OriPassword == "" || ParamUser.NewPassword == "" || ParamUser.RePassword == "" || ParamUser.NewPassword != ParamUser.RePassword || ParamUser.OriPassword == ParamUser.NewPassword {
+		RespFailed(c, CodeInvalidParam)
+		return
+	}
+	uid, ok := utils.GetCurrentUser(c)
+	if !ok {
+		RespFailed(c, CodeNeedLogin)
+		return
+	}
+	ParamUser.Uid = uid
+	ParamUser.NewPassword = utils.Md5(ParamUser.NewPassword)
+	ParamUser.OriPassword = utils.Md5(ParamUser.OriPassword)
+	if err := services.RevisePassword(ParamUser); err != nil {
+		if errors.Is(err, mysql.ErrorWrongPassword) {
+			RespFailed(c, CodeWrongPassword)
+			return
+		}
+		RespFailed(c, CodeServiceBusy)
+		return
+	}
+	RespSuccess(c, nil)
+}
+
+// ReviseUsername 修改用户名
+func ReviseUsername(c *gin.Context) {
+	ParamUser := new(model.ParamReviseUser)
+	if err := c.ShouldBindJSON(ParamUser); err != nil {
+		RespFailed(c, CodeInvalidParam)
+		return
+	}
+	if ParamUser.NewUsername == "" {
+		RespFailed(c, CodeInvalidParam)
+		return
+	}
+	uid, ok := utils.GetCurrentUser(c)
+	if !ok {
+		RespFailed(c, CodeNeedLogin)
+		return
+	}
+	ParamUser.Uid = uid
+	if err := services.ReviseUsername(ParamUser); err != nil {
+		if errors.Is(err, mysql.ErrorUserExist) {
+			RespFailed(c, CodeUserExist)
+			return
+		}
+		RespFailed(c, CodeServiceBusy)
+		return
+	}
+	RespSuccess(c, nil)
+}
