@@ -1,6 +1,7 @@
 app:
   name: "zhihu"
   mode: "debug"
+  post: "localhost"
   port: "8080"
   version: "v1"
 database:

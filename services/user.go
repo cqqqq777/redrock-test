@@ -197,3 +197,34 @@ func ReviseUsername(user *model.ParamReviseUser) error {
 	}
 	return nil
 }
+
+// ForgetPassword 忘记密码
+func ForgetPassword(user *model.ParamRegisterUser) (err error) {
+	if mysql.CheckEmail(user.Email) == nil {
+		return mysql.ErrorEmailNotExist
+	}
+	verification, err := redisdao.GetVerification(user.Email)
+	if err != nil || verification != user.Verification {
+		return redisdao.ErrorInvalidVerification
+	}
+	uid, err := mysql.FindUid(user.Email)
+	if err != nil {
+		return err
+	}
+	if err = mysql.RevisePassword(user.Password, uid); err != nil {
+		return err
+	}
+	return nil
+}
+
+func GetUserInfo(uid int64) (data *model.User, err error) {
+	return mysql.GetUserInfo(uid)
+}
+
+func UpdateUserInfo(uid int, user *model.User) error {
+	if uid != user.Uid {
+		return mysql.ErrorNoPermission
+	}
+	err := mysql.UpdateUserInfo(user)
+	return err
+}

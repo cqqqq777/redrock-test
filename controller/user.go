@@ -1,7 +1,9 @@
 package controller
 
 import (
+	"database/sql"
 	"errors"
+	"fmt"
 	"github.com/gin-gonic/gin"
 	"redrock-test/dao/mysql"
 	"redrock-test/dao/redisdao"
@@ -9,6 +11,7 @@ import (
 	"redrock-test/model"
 	"redrock-test/services"
 	"redrock-test/utils"
+	"strconv"
 )
 
 // PostVerification 发送验证码
@@ -185,6 +188,86 @@ func ReviseUsername(c *gin.Context) {
 			return
 		}
 		RespFailed(c, CodeServiceBusy)
+		return
+	}
+	RespSuccess(c, nil)
+}
+
+// ForgetPassword 忘记密码
+func ForgetPassword(c *gin.Context) {
+	paramUser := new(model.ParamRegisterUser)
+	if err := c.ShouldBindJSON(paramUser); err != nil {
+		RespFailed(c, CodeInvalidParam)
+		return
+	}
+	if paramUser.Password != paramUser.RePassword {
+		RespFailed(c, CodeInvalidParam)
+		return
+	}
+	paramUser.Password = utils.Md5(paramUser.Password)
+	if err := services.ForgetPassword(paramUser); err != nil {
+		if errors.Is(err, mysql.ErrorEmailNotExist) {
+			RespFailed(c, CodeEmailNotExist)
+			return
+		}
+		if errors.Is(err, redisdao.ErrorInvalidVerification) {
+			RespFailed(c, CodeWrongVerification)
+			return
+		}
+		RespFailed(c, CodeServiceBusy)
+		return
+	}
+	RespSuccess(c, nil)
+}
+
+// GetUserInfo 获取用户信息
+func GetUserInfo(c *gin.Context) {
+	uidStr := c.Param("uid")
+	uid, err := strconv.ParseInt(uidStr, 10, 64)
+	if err != nil {
+		RespFailed(c, CodeInvalidParam)
+		return
+	}
+	data, err := services.GetUserInfo(uid)
+	if err != nil {
+		if errors.Is(err, sql.ErrNoRows) {
+			RespFailed(c, CodeInvalidId)
+			return
+		}
+		RespFailed(c, CodeServiceBusy)
+		g.Logger.Warn(fmt.Sprintf("%v", err))
+		return
+	}
+	RespSuccess(c, data)
+}
+
+// UpdateUserInfo 修改用户信息
+func UpdateUserInfo(c *gin.Context) {
+	uidStr := c.Param("uid")
+	uid, err := strconv.ParseInt(uidStr, 10, 64)
+	if err != nil {
+		RespFailed(c, CodeInvalidParam)
+		return
+	}
+	reallyUid, ok := utils.GetCurrentUser(c)
+	if !ok {
+		RespFailed(c, CodeNeedLogin)
+		return
+	}
+	user := new(model.User)
+	if err = c.ShouldBindJSON(user); err != nil {
+		RespFailed(c, CodeInvalidParam)
+		return
+	}
+	user.Uid = reallyUid
+	err = services.UpdateUserInfo(int(uid), user)
+	if err != nil {
+		if errors.Is(err, mysql.ErrorNoPermission) {
+			RespFailed(c, CodeNoPermission)
+			return
+		}
+		RespFailed(c, CodeServiceBusy)
+		g.Logger.Warn(fmt.Sprintf("%v", err))
 		return
 	}
 	RespSuccess(c, nil)
