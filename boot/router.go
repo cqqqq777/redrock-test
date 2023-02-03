@@ -26,12 +26,13 @@ func InitRouters() {
 	private := v1.Group("")
 	private.Use(middleware.JWTAuth)
 	{
-		private.PUT("/password", controller.RevisePassword)        //修改密码
-		private.PUT("/username", controller.ReviseUsername)        //修改用户名
-		private.PUT("/users/:uid/info", controller.UpdateUserInfo) //修改用户信息
-		private.POST("/comments", controller.CommentBook)          //书评
-		private.POST("/comments/reply", controller.ReplyComment)   //回复评论
-		private.DELETE("/comments/:cid", controller.DeleteComment) //删除评论
+		private.PUT("/password", controller.RevisePassword)         //修改密码
+		private.PUT("/username", controller.ReviseUsername)         //修改用户名
+		private.PUT("/users/:uid/info", controller.UpdateUserInfo)  //修改用户信息
+		private.POST("/comments", controller.CommentBook)           //书评
+		private.POST("/comments/reply", controller.ReplyComment)    //回复评论
+		private.DELETE("/comments/:cid", controller.DeleteComment)  //删除评论
+		private.POST("/comments/:cid/star", controller.StarComment) //给评论点赞
 	}
 	if err := r.Run(); err != nil {
 		panic(err)
