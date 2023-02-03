@@ -14,19 +14,19 @@ type Comment struct {
 }
 
 type ApiComment struct {
-	Author   string `json:"author"`
-	Stars    int64  `json:"stars"`
-	ReplyNum int64  `json:"reply_num"`
-	Started  bool   `json:"started"`
-	*Comment
+	Author   string   `json:"author"`
+	Stars    int64    `json:"stars"`
+	ReplyNum int64    `json:"reply_num"`
+	Started  bool     `json:"started"`
+	Comment  *Comment `json:"comment"`
 }
 
 type ApiReply struct {
-	Author          string `json:"author"`
-	CommentedPeople string `json:"commented_people"`
-	Stars           int64  `json:"stars"`
-	Started         bool   `json:"started"`
-	*Comment
+	Author          string   `json:"author"`
+	CommentedPeople string   `json:"commented_people"`
+	Stars           int64    `json:"stars"`
+	Started         bool     `json:"started"`
+	Comment         *Comment `json:"comment"`
 }
 
 type ApiCommentList struct {

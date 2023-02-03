@@ -104,3 +104,53 @@ func DeleteComment(c *gin.Context) {
 	}
 	RespSuccess(c, nil)
 }
+
+// BookCommentList 获取某本书的书评
+func BookCommentList(c *gin.Context) {
+	pidStr := c.Param("bid")
+	pid, err := strconv.ParseInt(pidStr, 10, 64)
+	if err != nil {
+		RespFailed(c, CodeInvalidParam)
+		return
+	}
+	uidStr := c.Request.Header.Get("uid")
+	var uid int64
+	if uidStr == "" {
+		uid = 0
+	} else {
+		uid, err = strconv.ParseInt(uidStr, 10, 64)
+	}
+	if err != nil {
+		RespFailed(c, CodeInvalidParam)
+		return
+	}
+	page, size := utils.GetPageInfo(c)
+	data, err := services.BookCommentList(pid, uid, page, size)
+	if err != nil {
+		RespFailed(c, CodeServiceBusy)
+		g.Logger.Warn(err.Error())
+		return
+	}
+	RespSuccess(c, data)
+}
+
+// ReplyList 获取书评的回复
+func ReplyList(c *gin.Context) {
+	cidStr := c.Param("cid")
+	cid, err := strconv.ParseInt(cidStr, 10, 64)
+	if err != nil {
+		RespFailed(c, CodeInvalidParam)
+		return
+	}
+	uidStr := c.Request.Header.Get("uid")
+	var uid int64
+	uid, _ = strconv.ParseInt(uidStr, 10, 64)
+	page, size := utils.GetPageInfo(c)
+	data, err := services.ReplyList(cid, uid, page, size)
+	if err != nil {
+		RespFailed(c, CodeServiceBusy)
+		g.Logger.Warn(err.Error())
+		return
+	}
+	RespSuccess(c, data)
+}

@@ -86,3 +86,13 @@ func UpdateUserInfo(user *model.User) error {
 	_, err := g.Mdb.Exec("update  users set gender = ?,introduction = ? , head_portrait = ?,background_img = ? where uid = ?", user.Gender, user.Introduction, user.HeadPortrait, user.BackgroundImg, user.Uid)
 	return err
 }
+
+func FindUsernameByUid(uid int) (username string, err error) {
+	err = g.Mdb.QueryRow("select username from users where uid = ?", uid).Scan(&username)
+	return
+}
+
+func GetIdByUid(uid int64) (id int64, err error) {
+	err = g.Mdb.QueryRow("select id from users where uid =?", uid).Scan(&id)
+	return
+}

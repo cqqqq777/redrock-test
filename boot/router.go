@@ -20,6 +20,8 @@ func InitRouters() {
 		public.POST("/login/verification", controller.LoginByVerification) //登录（验证码）
 		public.PUT("/password/forget", controller.ForgetPassword)          //忘记密码
 		public.GET("/users/:uid/info", controller.GetUserInfo)             //获取用户信息
+		public.GET("/books/:bid/comments", controller.BookCommentList)     //获取某本书的书评
+		public.GET("/comments/:cid/replies", controller.ReplyList)         //获取书评的回复
 	}
 	private := v1.Group("")
 	private.Use(middleware.JWTAuth)
