@@ -11,7 +11,7 @@ func GetBookDetailKey(bid int64) string {
 }
 
 func GetStarBookKey(bid int64) string {
-	return "post:" + strconv.FormatInt(bid, 10) + ":stars"
+	return "book:" + strconv.FormatInt(bid, 10) + ":stars"
 }
 
 func GetStarCommentKey(cid int64) string {
