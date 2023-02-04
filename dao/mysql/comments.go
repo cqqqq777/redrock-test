@@ -74,3 +74,25 @@ func ReplyList(cid, page, size int64) (replies []*model.ApiReply, err error) {
 	}
 	return
 }
+
+func GetCidList() (list []int64, err error) {
+	list = make([]int64, 0)
+	rows, err := g.Mdb.Query("select cid from comments where content <> ?", isDel)
+	if err != nil {
+		return nil, err
+	}
+	for rows.Next() {
+		var cid int64
+		err = rows.Scan(&cid)
+		if err != nil {
+			return nil, err
+		}
+		list = append(list, cid)
+	}
+	return
+}
+
+func SyncCommentStars(cid, stars int64) error {
+	_, err := g.Mdb.Exec("update comments set stars = ? where cid = ?", stars, cid)
+	return err
+}

@@ -109,3 +109,30 @@ func BookList(page, size int64) (data []*model.Book, err error) {
 	}
 	return
 }
+
+func GetBidList() (list []int64, err error) {
+	list = make([]int64, 0)
+	rows, err := g.Mdb.Query("select bid from books ")
+	if err != nil {
+		return nil, err
+	}
+	for rows.Next() {
+		var bid int64
+		err = rows.Scan(&bid)
+		if err != nil {
+			return nil, err
+		}
+		list = append(list, bid)
+	}
+	return
+}
+
+func GetBookCollectNum(bid int64) (num int64, err error) {
+	err = g.Mdb.QueryRow("select count(id) from bookshelf where bid = ?", bid).Scan(&num)
+	return
+}
+
+func SyncBookScore(bid, score int64) error {
+	_, err := g.Mdb.Exec("update books set score = ? where bid = ?", score, bid)
+	return err
+}

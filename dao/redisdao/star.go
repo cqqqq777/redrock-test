@@ -40,3 +40,8 @@ func CancelStarBook(bid, id int64) error {
 	err := g.Rdb.SetBit(context.Background(), GetStarBookKey(bid), id, 0).Err()
 	return err
 }
+
+func GetBookStars(bid int64) (int64, error) {
+	intCmd := g.Rdb.BitCount(context.Background(), GetStarBookKey(bid), &redis.BitCount{})
+	return intCmd.Val(), intCmd.Err()
+}
