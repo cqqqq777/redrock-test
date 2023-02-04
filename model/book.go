@@ -14,6 +14,7 @@ type Book struct {
 
 type ApiBook struct {
 	Started    bool   `json:"is_star"`
+	Collected  bool   `json:"is_collected"`
 	CommentNum int64  `json:"comment_num"`
 	Tags       string `json:"tags"`
 	Book       *Book  `json:"book"`

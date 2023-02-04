@@ -22,3 +22,21 @@ func StarComment(cid, uid int64) error {
 	}
 	return err
 }
+
+func StarBook(bid, uid int64) error {
+	id, err := mysql.GetIdByUid(uid)
+	if err != nil {
+		return err
+	}
+	status, err := redisdao.GetUserStarBookStatus(bid, id)
+	if err != nil {
+		return err
+	}
+	switch status {
+	case 0:
+		err = redisdao.StarBook(bid, id)
+	case 1:
+		err = redisdao.CancelStarBook(bid, id)
+	}
+	return err
+}

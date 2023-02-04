@@ -40,6 +40,7 @@ func InitRouters() {
 		private.POST("/comments/:cid/star", controller.StarComment)            //给评论点赞
 		private.POST("/books/:bid/collection", controller.CollectBook)         //收藏某本书
 		private.DELETE("/books/:bid/collection", controller.CancelCollectBook) //取消收藏
+		private.POST("/books/:bid/star", controller.StarBook)                  //点赞某本书
 	}
 	if err := r.Run(); err != nil {
 		panic(err)

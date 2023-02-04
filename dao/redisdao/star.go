@@ -25,3 +25,18 @@ func CancelStarComment(cid, uid int64) error {
 	err := g.Rdb.SetBit(context.Background(), GetStarCommentKey(cid), uid, 0).Err()
 	return err
 }
+
+func GetUserStarBookStatus(bid, id int64) (int64, error) {
+	intCmd := g.Rdb.GetBit(context.Background(), GetStarBookKey(bid), id)
+	return intCmd.Val(), intCmd.Err()
+}
+
+func StarBook(bid, id int64) error {
+	err := g.Rdb.SetBit(context.Background(), GetStarBookKey(bid), id, 1).Err()
+	return err
+}
+
+func CancelStarBook(bid, id int64) error {
+	err := g.Rdb.SetBit(context.Background(), GetStarBookKey(bid), id, 0).Err()
+	return err
+}

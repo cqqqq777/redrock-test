@@ -126,3 +126,24 @@ func BookList(c *gin.Context) {
 	}
 	RespSuccess(c, data)
 }
+
+// StarBook 点赞某本书
+func StarBook(c *gin.Context) {
+	uid, ok := utils.GetCurrentUser(c)
+	if !ok {
+		RespFailed(c, CodeNeedLogin)
+		return
+	}
+	bidStr := c.Param("bid")
+	bid, err := strconv.ParseInt(bidStr, 10, 64)
+	if err != nil {
+		RespFailed(c, CodeInvalidParam)
+		return
+	}
+	if err = services.StarBook(bid, int64(uid)); err != nil {
+		RespFailed(c, CodeServiceBusy)
+		g.Logger.Warn(err.Error())
+		return
+	}
+	RespSuccess(c, nil)
+}
