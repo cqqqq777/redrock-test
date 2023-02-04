@@ -11,4 +11,5 @@ var (
 	ErrorInvalidId     = errors.New("无效的id")
 	ErrorQuestionExist = errors.New("问题已存在")
 	ErrorNoPermission  = errors.New("无权限")
+	ErrorRepeatOperate = errors.New("重复操作")
 )
